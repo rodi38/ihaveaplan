@@ -25,9 +25,9 @@ export const PlanForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 text-white">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-white mb-1">
           Título
         </label>
         <input
@@ -40,7 +40,7 @@ export const PlanForm = ({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-white mb-1">
           Descrição
         </label>
         <textarea
@@ -51,7 +51,7 @@ export const PlanForm = ({
         />
       </div>
 
-      <div className="flex justify-end space-x-3">
+      <div className="flex justify-end space-x-3 text-white">
         <button
           type="button"
           onClick={onCancel}
@@ -61,7 +61,7 @@ export const PlanForm = ({
         </button>
         <button
           type="submit"
-          className="px-4 py-2 text-sm bg-blue-500 text-white rounded-md"
+          className="px-4 py-2 text-sm bg-blue-500 rounded-md"
         >
           Salvar
         </button>

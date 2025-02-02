@@ -9,8 +9,9 @@ export const PlanList = () => {
   if (loading) return <div>Carregando...</div>;
   if (error) return <div>Erro: {error}</div>;
 
+
   return (
-    <div className="min-h-screen bg-cyan-600">
+    <div className="min-h-screen bg-gray-900">
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {plans.map((plan) => (
