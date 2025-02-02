@@ -44,7 +44,7 @@ export const Header = () => {
           </div>
 
           {/* Mobile Navigation */}
-          {/* <div
+          <div
             className={`
             md:hidden 
             fixed inset-x-0 top-16 bg-white shadow-lg transition-transform duration-200 ease-in-out
@@ -87,7 +87,7 @@ export const Header = () => {
                 Novo
               </Link>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </header>
