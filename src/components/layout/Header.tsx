@@ -7,7 +7,7 @@ export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="border-b bg-white">
+    <header className="border-b bg-gray-900">
       <div className="container mx-auto px-4">
         <div className="flex items-center h-16 justify-center">
           {/* Burger Menu Icon */}
@@ -19,7 +19,7 @@ export const Header = () => {
           </button>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-8 text-white">
             <Link
               to="/"
               className="text-lg font-medium hover:text-blue-600 transition-colors"
@@ -44,7 +44,7 @@ export const Header = () => {
           </div>
 
           {/* Mobile Navigation */}
-          {/* <div
+          <div
             className={`
             md:hidden 
             fixed inset-x-0 top-16 bg-white shadow-lg transition-transform duration-200 ease-in-out
@@ -87,7 +87,7 @@ export const Header = () => {
                 Novo
               </Link>
             </div>
-          </div> */}
+          </div>
         </div>
       </div>
     </header>

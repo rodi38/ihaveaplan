@@ -8,7 +8,7 @@ import { Header } from "../components/layout/Header";
 
 const rootRoute = new RootRoute({
   component: () => (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-900">
       <Header />
       <Outlet /> {/* Isso renderizará as rotas filhas */}
     </div>
@@ -25,11 +25,14 @@ const newPlanRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/new",
   component: () => (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 text-white">
       <h2 className="text-2xl font-bold mb-6">Novo Plano de Estudos</h2>
       <PlanForm
         onSubmit={async (data) => {
           // Implementation will be handled by the component
+
+          console.log('data', data);
+          
         }}
         onCancel={() => window.history.back()}
       />
