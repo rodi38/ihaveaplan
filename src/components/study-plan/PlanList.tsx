@@ -1,7 +1,7 @@
-import React from 'react';
-import { useStudyPlans } from '../../hooks/useStudyPlans';
-import { PlanCard } from './PlanCard';
-import { Header } from '../layout/Header';
+import React from "react";
+import { useStudyPlans } from "../../hooks/useStudyPlans";
+import { PlanCard } from "./PlanCard";
+import { Header } from "../layout/Header";
 
 export const PlanList = () => {
   const { plans, loading, error, updatePlan, deletePlan } = useStudyPlans();
@@ -11,8 +11,6 @@ export const PlanList = () => {
 
   return (
     <div className="min-h-screen bg-cyan-600">
-      <Header />
-      
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {plans.map((plan) => (
