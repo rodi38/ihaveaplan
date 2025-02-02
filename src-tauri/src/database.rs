@@ -1,21 +1,47 @@
-use rusqlite::{Connection, Result};
+use rusqlite::Connection;
+use std::fs;
+use tauri::api::path;
 
-pub fn initialize_database() -> Result<()> {
-    let conn = Connection::open("study_app.db")?;
+pub struct DatabaseManager {
+    conn: Connection,
+}
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS study_plans (
+impl DatabaseManager {
+    pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
+        // Get the app data directory
+        let app_dir = path::app_data_dir(&tauri::Config::default())
+            .ok_or("Failed to get app data directory")?;
+
+        // Create the directory if it doesn't exist
+        fs::create_dir_all(&app_dir)?;
+
+        // Create the database file path
+        let db_path = app_dir.join("study_app.db");
+
+        // Open connection
+        let conn = Connection::open(db_path)?;
+
+        // Initialize database tables
+        Self::initialize_tables(&conn)?;
+
+        Ok(Self { conn })
+    }
+    fn initialize_database() -> Result<()> {
+        let conn = Connection::open("study_app.db")?;
+
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS study_plans (
             id INTEGER PRIMARY KEY,
             title TEXT NOT NULL,
             description TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )",
-        [],
-    )?;
+            [],
+        )?;
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS subjects (
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS subjects (
             id INTEGER PRIMARY KEY,
             plan_id INTEGER,
             title TEXT NOT NULL,
@@ -23,11 +49,11 @@ pub fn initialize_database() -> Result<()> {
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (plan_id) REFERENCES study_plans(id)
         )",
-        [],
-    )?;
+            [],
+        )?;
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS sections (
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS sections (
             id INTEGER PRIMARY KEY,
             subject_id INTEGER,
             title TEXT NOT NULL,
@@ -35,11 +61,11 @@ pub fn initialize_database() -> Result<()> {
             order_index INTEGER,
             FOREIGN KEY (subject_id) REFERENCES subjects(id)
         )",
-        [],
-    )?;
+            [],
+        )?;
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS subsections (
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS subsections (
             id INTEGER PRIMARY KEY,
             section_id INTEGER,
             title TEXT NOT NULL,
@@ -47,11 +73,11 @@ pub fn initialize_database() -> Result<()> {
             order_index INTEGER,
             FOREIGN KEY (section_id) REFERENCES sections(id)
         )",
-        [],
-    )?;
+            [],
+        )?;
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS todos (
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS todos (
             id INTEGER PRIMARY KEY,
             subsection_id INTEGER,
             title TEXT NOT NULL,
@@ -59,11 +85,11 @@ pub fn initialize_database() -> Result<()> {
             due_date TIMESTAMP,
             FOREIGN KEY (subsection_id) REFERENCES subsections(id)
         )",
-        [],
-    )?;
+            [],
+        )?;
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS exercises (
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS exercises (
             id INTEGER PRIMARY KEY,
             subsection_id INTEGER,
             title TEXT NOT NULL,
@@ -72,32 +98,32 @@ pub fn initialize_database() -> Result<()> {
             notes TEXT,
             FOREIGN KEY (subsection_id) REFERENCES subsections(id)
         )",
-        [],
-    )?;
+            [],
+        )?;
 
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS tags (
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS tags (
             id INTEGER PRIMARY KEY,
             name TEXT NOT NULL UNIQUE,
             color TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )",
-        [],
-    )?;
-    
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS plan_tags (
+            [],
+        )?;
+
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS plan_tags (
             plan_id INTEGER,
             tag_id INTEGER,
             PRIMARY KEY (plan_id, tag_id),
             FOREIGN KEY (plan_id) REFERENCES study_plans(id),
             FOREIGN KEY (tag_id) REFERENCES tags(id)
         )",
-        [],
-    )?;
-    
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS study_sessions (
+            [],
+        )?;
+
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS study_sessions (
             id INTEGER PRIMARY KEY,
             plan_id INTEGER,
             subject_id INTEGER,
@@ -109,11 +135,11 @@ pub fn initialize_database() -> Result<()> {
             FOREIGN KEY (subject_id) REFERENCES subjects(id),
             FOREIGN KEY (section_id) REFERENCES sections(id)
         )",
-        [],
-    )?;
-    
-    conn.execute(
-        "CREATE TABLE IF NOT EXISTS progress_tracking (
+            [],
+        )?;
+
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS progress_tracking (
             id INTEGER PRIMARY KEY,
             plan_id INTEGER,
             subject_id INTEGER,
@@ -127,8 +153,25 @@ pub fn initialize_database() -> Result<()> {
             FOREIGN KEY (section_id) REFERENCES sections(id),
             FOREIGN KEY (subsection_id) REFERENCES subsections(id)
         )",
-        [],
-    )?;
+            [],
+        )?;
 
-    Ok(())
+        Ok(())
+    }
+    pub fn get_connection(&self) -> &Connection {
+        &self.conn
+    }
+}
+
+// State management for Tauri
+pub struct AppState {
+    db: DatabaseManager,
+}
+
+impl AppState {
+    pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {
+            db: DatabaseManager::new()?,
+        })
+    }
 }

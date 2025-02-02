@@ -1,10 +1,17 @@
 // src/router.tsx
-import { Router, Route, RootRoute, Outlet } from "@tanstack/react-router";
+import {
+  Router,
+  Route,
+  RootRoute,
+  Outlet,
+  Navigate,
+} from "@tanstack/react-router";
 import { PlanList } from "../components/study-plan/PlanList";
-import { PlanForm } from "../components/study-plan/PlanForm";
+import { NewPlan } from "../components/study-plan/NewPlan";
 import App from "../App";
 import { Stats } from "../components/stats/Stats";
 import { Header } from "../components/layout/Header";
+import { useStudyPlans } from "../hooks/useStudyPlans";
 
 const rootRoute = new RootRoute({
   component: () => (
@@ -21,23 +28,32 @@ const indexRoute = new Route({
   component: PlanList,
 });
 
+// const newPlanRoute = new Route({
+//   getParentRoute: () => rootRoute,
+//   path: "/new",
+//   component: () => (
+//     <div className="container mx-auto px-4 py-8 text-white">
+//       <h2 className="text-2xl font-bold mb-6">Novo Plano de Estudos</h2>
+//       <PlanForm
+//         onSubmit={async (data) => {
+//           // Implementation will be handled by the component
+
+//           createPlan(data.title, data.description);
+//           Navigate({to: '/'});
+
+//           console.log('data', data);
+
+//         }}
+//         onCancel={() => window.history.back()}
+//       />
+//     </div>
+//   ),
+// });
+
 const newPlanRoute = new Route({
   getParentRoute: () => rootRoute,
   path: "/new",
-  component: () => (
-    <div className="container mx-auto px-4 py-8 text-white">
-      <h2 className="text-2xl font-bold mb-6">Novo Plano de Estudos</h2>
-      <PlanForm
-        onSubmit={async (data) => {
-          // Implementation will be handled by the component
-
-          console.log('data', data);
-          
-        }}
-        onCancel={() => window.history.back()}
-      />
-    </div>
-  ),
+  component: NewPlan,
 });
 
 const statsRoute = new Route({
